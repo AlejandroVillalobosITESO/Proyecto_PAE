@@ -58,6 +58,14 @@ const PostsController = {
             res.sendStatus(500);
         });
     },
+    getPostsOfUser:(req, res) => {
+        const post = new Post();
+        post.getPostsOfUser(req.params.id).then(results => {
+            if(results) res.status(200).send(results);
+        }).catch(err => {
+            res.sendStatus(500);
+        });
+    },
 }
 
 module.exports = PostsController;

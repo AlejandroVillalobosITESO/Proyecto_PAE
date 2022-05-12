@@ -85,6 +85,27 @@ router.route('/forum/:id')
    */
 .get(controller.getPostOfForum);
 
+router.route('/user/:id')
+  /**
+   * @swagger
+   *   /posts/user/{id}:
+   *     get:
+   *       tags:
+   *       - Posts
+   *       description: Get all the posts with a id user
+   *       parameters:
+   *         - in: path
+   *           name: id
+   *           required: true
+   *           description: The user's unique ID
+   *       responses:
+   *         200:
+   *           description: An array of posts of the same user
+   *         500:
+   *           description: String with the error message
+   */
+.get(controller.getPostsOfUser);
+
 router.route('/:id')
   /**
    * @swagger

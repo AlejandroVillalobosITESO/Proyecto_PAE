@@ -4,7 +4,6 @@ const {ObjectId} = require('mongodb');
 const bcrypt = require('bcrypt');
 const {OAuth2Client } = require('google-auth-library');
 const Database = require('../../core/database');
-const { reject } = require('bcrypt/promises');
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const saltRounds = 10;
 const tokenKey = process.env.TOKEN_KEY;
@@ -17,6 +16,7 @@ class User extends Model {
     //getOne already implemented in model
     //delete already implemented in model
     create(body) {
+
         return new Promise((accept, reject) => {
             if(!body.username || !body.password || !body.email) reject('Data is missing');
             else{

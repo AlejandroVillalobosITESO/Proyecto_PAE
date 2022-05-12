@@ -70,5 +70,13 @@ class Post extends Model {
             });
         });
     }
+    getPostsOfUser(id){
+        return new Promise((accept, reject) => {
+            this.collection.find({id_author: id}).toArray((err, results) => {
+                if (err) reject(err);
+                else accept(results);
+            });
+        });
+    }
 }
 module.exports = Post;

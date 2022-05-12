@@ -23,7 +23,9 @@ app.get('/images/:file', (req, res) => {
 
 app.use(cors());
 app.use(bp.json());
-app.use(bp.urlencoded({ extended: true }));
+app.use(bp.urlencoded({
+    extended: true
+}));
 app.use('/', apiRoutes);
 
 const swaggerOptions = {
@@ -33,7 +35,7 @@ const swaggerOptions = {
             title: 'Proyecto PAE',
             description: 'A forums web page',
             version: '1.0.0',
-            servers: ['http://localhost:'+port]
+            servers: ['http://localhost:' + port]
         }
     },
     apis: ['./src/modules/**/*.routes.js']
@@ -44,24 +46,42 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 Database.connect().then(() => {
     // Listen to port
-    server =  app.listen(port, () => {
+    server = app.listen(port, () => {
         console.log('App is listening to port ' + port);
     });
     const io = socketIo(server, {
-        cors:{
-            origin:'http://localhost:4200',
+        cors: {
+            origin: 'http://localhost:4200',
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
             allowHeaders: ['Authorization'],
             credentials: true
         }
     });
-    
+
     io.on('connection', socket => {
         console.log('alguien se conecto');
-        
-        socket.on('newMessage', data => {
-            console.log('Hay nuevo mensaje', data);
-            socket.broadcast.emit('reciveMessage', data);
+
+        socket.on('viewComments', (data) => {
+            socket.join(data);
+            console.log("alguien quiere comentarios del post " + data);
+            Database.collection('comments').find({id_post: data}).toArray((err, results) => {
+                socket.to(data).emit('viewComments', results);
+            });
+        });
+
+        socket.on('viewPosts', (data) => {
+            socket.join(data);
+            console.log("alguien quiere posts del foro " + data);
+            Database.collection('posts').find({id_forum: data}).toArray((err, results) => {
+                socket.to(data).emit('viewPosts', results);
+            });
+        });
+
+        socket.on('viewForums', (data) => {
+            console.log("alguien quiere foros ");
+            Database.collection('forums').find({}).toArray((err, results) => {
+                socket.broadcast.emit("viewForums", results);
+            });
         });
     });
 });
