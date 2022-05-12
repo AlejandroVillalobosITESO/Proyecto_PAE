@@ -41,11 +41,31 @@ class User extends Model {
         return new Promise((accept, reject) => {
             this.collection.findOne({_id: ObjectId(id)}, (err, result) => {
                 if(result){
-                    let upgrade = {
-                        username: body.username || result.username,
-                        password: bcrypt.hashSync(body.password, saltRounds) || result.password,
-                        email: body.email || result.email,
-                        profile_picture: ('public/images/'+ file.filename) || result.profile_picture
+                    let upgrade = {};
+                    if(file){
+                        if(body.password){
+                            upgrade = {
+                                username: body.username || result.username,
+                                password: bcrypt.hashSync(body.password, saltRounds) || result.password,
+                                profile_picture: (file.filename) || result.profile_picture
+                            }
+                        } else {
+                            upgrade = {
+                                username: body.username || result.username,
+                                profile_picture: (file.filename) || result.profile_picture
+                            }
+                        }
+                    } else {
+                        if(body.password){
+                            upgrade = {
+                                username: body.username || result.username,
+                                password: bcrypt.hashSync(body.password, saltRounds) || result.password,
+                            }
+                        } else {
+                            upgrade = {
+                                username: body.username || result.username,
+                            }
+                        }
                     }
                     accept(this.collection.updateOne({_id: ObjectId(id)}, {$set: upgrade}));
                 } else{
