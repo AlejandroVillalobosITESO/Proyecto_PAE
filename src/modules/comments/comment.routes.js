@@ -50,7 +50,7 @@ router.route('/')
    */
   .post(controller.create);
 
-  router.route('/getAll/:id')
+  router.route('/post/:id')
   /**
    * @swagger
    *   /comments/getAll/{id}:
@@ -69,7 +69,7 @@ router.route('/')
    *         500:
    *           description: String with the error message
    */
-  .get(controller.getAllCommentsForum);
+  .get(controller.getAllCommentsPost);
 
 router.route('/count')
 /**

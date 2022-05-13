@@ -32,7 +32,7 @@ class Comment extends Model {
         });
     }
 
-    getAllcomentsForum(id){
+    getAllcomentsPost(id){
         return new Promise((accept, reject) => {
             this.collection.find({id_post: id}).toArray((err, results) => {
                 if (err) reject(err);
@@ -40,6 +40,7 @@ class Comment extends Model {
                });
         });
     }
+
 }
 
 module.exports = Comment;
